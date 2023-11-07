@@ -1,0 +1,7 @@
+{
+    "prettier.printWidth": 8000,
+    "launch": {
+        "configurations": [],
+        "compounds": []
+    }
+}

@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LoadingBar from "react-top-loading-bar";
 
 const App = () => {
-  const pageSize = 5;
+  const pageSize = 8;
   const country = "us";
   const apiKey = process.env.REACT_APP_NEWS_API;
 

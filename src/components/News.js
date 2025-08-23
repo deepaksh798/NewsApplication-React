@@ -30,10 +30,10 @@ const News = (props) => {
     props.setProgress(100);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     document.title = `${capitalizeFirstLetter(props.category)} - NewsNow`;
     updateNews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchMoreData = async () => {

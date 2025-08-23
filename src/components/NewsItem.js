@@ -19,6 +19,9 @@ const NewsItem = (props) => {
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
 
+  console.log(imageUrl);
+  
+
   return (
     <article className="group h-full">
       <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-slate-200 h-full flex flex-col">

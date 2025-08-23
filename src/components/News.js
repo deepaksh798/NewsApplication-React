@@ -16,7 +16,8 @@ const News = (props) => {
 
   const updateNews = async () => {
     props.setProgress(10);
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    // const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    const url = `https://gnews.io/api/v4/search?q=${props.category}&apikey=${props.apiKey}&page=${page}&max=${props.pageSize}&country=${props.country}`;
     setLoading(true);
     let data = await fetch(url);
     props.setProgress(30);
@@ -37,7 +38,8 @@ const News = (props) => {
   }, []);
 
   const fetchMoreData = async () => {
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`;
+    // const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`;
+    const url = `https://gnews.io/api/v4/search?q=${props.category}&apikey=${props.apiKey}&page=${page + 1}&max=${props.pageSize}&country=${props.country}`;
     setPage(page + 1);
 
     let data = await fetch(url);
@@ -45,6 +47,8 @@ const News = (props) => {
     setArticles(articles.concat(parsedData.articles || []));
     setTotalResults(parsedData.totalResults);
   };
+  console.log("articles-->",articles);
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -105,7 +109,7 @@ const News = (props) => {
                   <NewsItem 
                     title={element.title ? element.title : ""} 
                     description={element.description ? element.description : ""} 
-                    imageUrl={element.urlToImage} 
+                    imageUrl={element.image} 
                     newsUrl={element.url} 
                     author={element.author} 
                     date={element.publishedAt} 

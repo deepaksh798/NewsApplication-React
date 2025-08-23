@@ -36,3 +36,64 @@
     transform: rotate(360deg);
   }
 }
+
+.loader {
+  color: #3b82f6; /* Blue-500 to match your theme */
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  text-indent: -9999em;
+  animation: mulShdSpin 1.3s infinite linear;
+  transform: translateZ(0);
+}
+
+@keyframes mulShdSpin {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em #60a5fa, 
+    2em -2em 0 0em #3b82f6, 3em 0 0 -1em #1d4ed8, 
+    2em 2em 0 -1em #1e40af, 0 3em 0 -1em #1e3a8a, 
+    -2em 2em 0 -1em #312e81, -3em 0 0 -1em #3730a3, 
+    -2em -2em 0 0 #4338ca;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0 #4338ca, 2em -2em 0 0.2em #60a5fa, 
+    3em 0 0 0 #3b82f6, 2em 2em 0 -1em #1d4ed8, 0 3em 0 -1em #1e40af, 
+    -2em 2em 0 -1em #1e3a8a, -3em 0 0 -1em #312e81, 
+    -2em -2em 0 -1em #3730a3;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em #3730a3, 
+    2em -2em 0 0 #4338ca, 3em 0 0 0.2em #60a5fa, 
+    2em 2em 0 0 #3b82f6, 0 3em 0 -1em #1d4ed8, 
+    -2em 2em 0 -1em #1e40af, -3em 0 0 -1em #1e3a8a, 
+    -2em -2em 0 -1em #312e81;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -1em #312e81, 2em -2em 0 -1em #3730a3,
+     3em 0em 0 0 #4338ca, 2em 2em 0 0.2em #60a5fa, 0 3em 0 0em #3b82f6, 
+     -2em 2em 0 -1em #1d4ed8, -3em 0em 0 -1em #1e40af, -2em -2em 0 -1em #1e3a8a;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -1em #1e3a8a, 2em -2em 0 -1em #312e81,
+     3em 0 0 -1em #3730a3, 2em 2em 0 0em #4338ca, 0 3em 0 0.2em #60a5fa, 
+     -2em 2em 0 0 #3b82f6, -3em 0em 0 -1em #1d4ed8, -2em -2em 0 -1em #1e40af;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -1em #1e40af, 2em -2em 0 -1em #1e3a8a,
+     3em 0 0 -1em #312e81, 2em 2em 0 -1em #3730a3, 0 3em 0 0 #4338ca, 
+     -2em 2em 0 0.2em #60a5fa, -3em 0 0 0 #3b82f6, -2em -2em 0 -1em #1d4ed8;
+  }
+  75% {
+    box-shadow: 0em -3em 0 -1em #1d4ed8, 2em -2em 0 -1em #1e40af, 
+    3em 0em 0 -1em #1e3a8a, 2em 2em 0 -1em #312e81, 0 3em 0 -1em #3730a3, 
+    -2em 2em 0 0 #4338ca, -3em 0em 0 0.2em #60a5fa, -2em -2em 0 0 #3b82f6;
+  }
+  87.5% {
+    box-shadow: 0em -3em 0 0 #3b82f6, 2em -2em 0 -1em #1d4ed8, 
+    3em 0 0 -1em #1e40af, 2em 2em 0 -1em #1e3a8a, 0 3em 0 -1em #312e81, 
+    -2em 2em 0 0 #3730a3, -3em 0em 0 0 #4338ca, -2em -2em 0 0.2em #60a5fa;
+  }
+}

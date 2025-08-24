@@ -9,6 +9,7 @@ const News = (props) => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
+  const [isForbidden, setIsForbidden] = useState(false); // <-- Add this line
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -16,18 +17,21 @@ const News = (props) => {
 
   const updateNews = async () => {
     props.setProgress(10);
-    // const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
     const url = `https://gnews.io/api/v4/search?q=${props.category}&apikey=${props.apiKey}&page=${page}&max=${props.pageSize}&country=${props.country}`;
     setLoading(true);
     let data = await fetch(url);
+    if (data.status === 403) { // <-- Handle 403
+      setIsForbidden(true);
+      setLoading(false);
+      props.setProgress(100);
+      return;
+    }
     props.setProgress(30);
     let parsedData = await data.json();
     props.setProgress(70);
-    console.log(parsedData);
     setArticles(parsedData.articles || []);
     setTotalResults(parsedData.totalResults);
     setLoading(false);
-
     props.setProgress(100);
   };
 
@@ -38,11 +42,14 @@ const News = (props) => {
   }, []);
 
   const fetchMoreData = async () => {
-    // const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`;
     const url = `https://gnews.io/api/v4/search?q=${props.category}&apikey=${props.apiKey}&page=${page + 1}&max=${props.pageSize}&country=${props.country}`;
     setPage(page + 1);
 
     let data = await fetch(url);
+    if (data.status === 403) { // <-- Handle 403 in infinite scroll
+      setIsForbidden(true);
+      return;
+    }
     let parsedData = await data.json();
     setArticles(articles.concat(parsedData.articles || []));
     setTotalResults(parsedData.totalResults);
@@ -82,45 +89,55 @@ const News = (props) => {
         </div>
       )}
 
-      {/* News Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <InfiniteScroll 
-          dataLength={articles.length || 0} 
-          next={fetchMoreData} 
-          hasMore={articles.length !== totalResults} 
-          loader={<div className="flex justify-center py-8"><Spinner /></div>}
-          endMessage={
-            <div className="text-center py-12">
-              <div className="inline-block p-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl shadow-lg">
-                <p className="text-white font-semibold text-lg">
-                  🎉 You've caught up with all the latest news!
-                </p>
-              </div>
-            </div>
-          }
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {articles.map((element, index) => {
-              return (
-                <div 
-                  key={element.url || index} 
-                  className="transform hover:scale-105 transition-all duration-300"
-                >
-                  <NewsItem 
-                    title={element.title ? element.title : ""} 
-                    description={element.description ? element.description : ""} 
-                    imageUrl={element.image} 
-                    newsUrl={element.url} 
-                    author={element.author} 
-                    date={element.publishedAt} 
-                    source={element.source.name} 
-                  />
-                </div>
-              );
-            })}
+      {/* Forbidden/Error State */}
+      {isForbidden ? (
+        <div className="text-center py-12">
+          <div className="inline-block p-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl shadow-lg">
+            <p className="text-white font-semibold text-lg">
+              🔁 Daily API limit reached. We'll have more for you tomorrow!
+            </p>
           </div>
-        </InfiniteScroll>
-      </div>
+        </div>
+      ) : (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <InfiniteScroll 
+            dataLength={articles.length || 0} 
+            next={fetchMoreData} 
+            hasMore={articles.length !== totalResults} 
+            loader={<div className="flex justify-center py-8"><Spinner /></div>}
+            endMessage={
+              <div className="text-center py-12">
+                <div className="inline-block p-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl shadow-lg">
+                  <p className="text-white font-semibold text-lg">
+                    🔁 Daily API limit reached. We'll have more for you tomorrow!
+                  </p>
+                </div>
+              </div>
+            }
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {articles.map((element, index) => {
+                return (
+                  <div 
+                    key={element.url || index} 
+                    className="transform hover:scale-105 transition-all duration-300"
+                  >
+                    <NewsItem 
+                      title={element.title ? element.title : ""} 
+                      description={element.description ? element.description : ""} 
+                      imageUrl={element.image} 
+                      newsUrl={element.url} 
+                      author={element.author} 
+                      date={element.publishedAt} 
+                      source={element.source.name} 
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </InfiniteScroll>
+        </div>
+      )}
     </div>
   );
 };

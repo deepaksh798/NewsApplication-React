@@ -9,18 +9,19 @@ const News = (props) => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
-  const [isForbidden, setIsForbidden] = useState(false); // <-- Add this line
+  const [isForbidden, setIsForbidden] = useState(false);
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  const updateNews = async () => {
+  const updateNews = async (resetPage = false) => {
     props.setProgress(10);
-    const url = `https://gnews.io/api/v4/search?q=${props.category}&apikey=${props.apiKey}&page=${page}&max=${props.pageSize}&country=${props.country}`;
+    const currentPage = resetPage ? 1 : page;
+    const url = `https://gnews.io/api/v4/search?q=${props.category}&apikey=${props.apiKey}&page=${currentPage}&max=${props.pageSize}&country=${props.country}&lang=${props.lang}`;
     setLoading(true);
     let data = await fetch(url);
-    if (data.status === 403) { // <-- Handle 403
+    if (data.status === 403) {
       setIsForbidden(true);
       setLoading(false);
       props.setProgress(100);
@@ -33,20 +34,22 @@ const News = (props) => {
     setTotalResults(parsedData.totalResults);
     setLoading(false);
     props.setProgress(100);
+    if (resetPage) setPage(1);
   };
 
   useEffect(() => {
     document.title = `${capitalizeFirstLetter(props.category)} - NewsNow`;
-    updateNews();
+    updateNews(true); // Reset to page 1 on mount or prop change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.country, props.lang, props.category]);
 
   const fetchMoreData = async () => {
-    const url = `https://gnews.io/api/v4/search?q=${props.category}&apikey=${props.apiKey}&page=${page + 1}&max=${props.pageSize}&country=${props.country}`;
-    setPage(page + 1);
+    const nextPage = page + 1;
+    const url = `https://gnews.io/api/v4/search?q=${props.category}&apikey=${props.apiKey}&page=${nextPage}&max=${props.pageSize}&country=${props.country}&lang=${props.lang}`;
+    setPage(nextPage);
 
     let data = await fetch(url);
-    if (data.status === 403) { // <-- Handle 403 in infinite scroll
+    if (data.status === 403) {
       setIsForbidden(true);
       return;
     }
@@ -60,7 +63,7 @@ const News = (props) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Hero Section */}
-      <div className="pt-20 pb-8 bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900">
+      <div className="pt-10 pb-8 bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-block p-1 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 mb-4">
             <div className="px-6 py-2 bg-slate-900 rounded-xl">
@@ -146,12 +149,14 @@ News.defaultProps = {
   country: "in",
   pageSize: 8,
   category: "general",
+  lang: "en",
 };
 
 News.propTypes = {
   country: PropTypes.string,
   pageSize: PropTypes.number,
   category: PropTypes.string,
+  lang: PropTypes.string,
 };
 
 export default News;
